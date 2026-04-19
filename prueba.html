@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marí Tere & Eduardo — 17 Octubre 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #b8975a;
+            --gold-light: #d4af77;
+            --gold-pale: #f0e6cc;
+            --dark: #1a1612;
+            --warm-white: #faf8f4;
+            --cream: #f5f0e8;
+            --text: #3d3530;
+            --text-light: #7a6f64;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Cormorant Garamond', serif; background: var(--warm-white); color: var(--text); overflow-x: hidden; }
+
+        /* NAVBAR */
+        .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; background:rgba(26,22,18,0.88); backdrop-filter:blur(12px); border-bottom:1px solid rgba(184,151,90,0.25); transition:all 0.4s; }
+        .nav-logo { font-family:'Playfair Display',serif; font-style:italic; color:var(--gold-light); font-size:1.3rem; }
+        .nav-menu { display:flex; gap:35px; list-style:none; }
+        .nav-menu a { font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:3px; text-transform:uppercase; color:rgba(240,230,204,0.75); text-decoration:none; transition:color 0.3s; }
+        .nav-menu a:hover { color:var(--gold-light); }
+        .menu-toggle { display:none; background:none; border:none; cursor:pointer; z-index:20; }
+        .menu-toggle span { display:block; width:22px; height:1px; background:var(--gold-light); margin:5px 0; }
+
+        /* HERO */
+        .hero {
+            height: 100vh;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center top;
+            background-attachment: scroll; /* scroll en vez de fixed para móvil */
+            filter: brightness(0.55);
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            /* SIN transform translateY — ese era el culpable */
+        }
+        .hero-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 6px;
+            color: var(--gold);
+            margin-bottom: 25px;
+        }
+        .hero-names {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(3rem, 10vw, 7rem);
+            color: #ffffff;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero-names span { color: var(--gold); }
+        .hero-divider { width:60px; height:1px; background:var(--gold); margin:20px auto; }
+        .hero-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: var(--gold);
+        }
+        .scroll-hint { position:absolute; bottom:35px; left:50%; transform:translateX(-50%); z-index:2; display:flex; flex-direction:column; align-items:center; gap:8px; opacity:0; animation:fadeIn 1s 2.2s ease forwards; }
+        .scroll-hint span { font-family:'Cinzel',serif; font-size:0.55rem; letter-spacing:4px; color:rgba(240,230,204,0.5); text-transform:uppercase; }
+        .scroll-line { width:1px; height:45px; background:linear-gradient(to bottom, transparent, var(--gold)); animation:scrollPulse 2s ease-in-out infinite; }
+        @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+        /* SECTIONS */
+        section { padding:80px 20px; }
+        .container { max-width:960px; margin:0 auto; }
+        .section-label { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:5px; text-transform:uppercase; color:var(--gold); text-align:center; margin-bottom:12px; }
+        .section-title { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(2rem,5vw,3.8rem); color:var(--dark); text-align:center; margin-bottom:12px; }
+        .section-divider { width:55px; height:1px; background:var(--gold); margin:0 auto 60px; }
+
+        /* CEREMONY */
+        .ceremony { background:var(--dark); color:#fff; position:relative; overflow:hidden; }
+        .ceremony-overlay { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0.13; }
+        .ceremony .section-label { color:var(--gold-light); }
+        .ceremony .section-title { color:#fff; }
+        .ceremony .section-divider { background:var(--gold-light); }
+        .ceremony-cards { display:grid; grid-template-columns:1fr 1fr; gap:25px; position:relative; z-index:1; }
+        .ceremony-card { border:1px solid rgba(184,151,90,0.28); padding:50px 38px; text-align:center; background:rgba(255,255,255,0.03); backdrop-filter:blur(5px); transition:all 0.4s; }
+        .ceremony-card:hover { border-color:var(--gold); background:rgba(184,151,90,0.07); }
+        .ceremony-card .icon { font-size:2rem; margin-bottom:20px; }
+        .ceremony-card h3 { font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+        .ceremony-card p { font-size:1.1rem; color:rgba(255,255,255,0.72); line-height:2; }
+        .ceremony-card .highlight { color:var(--gold-light); font-size:1.25rem; font-style:italic; }
+        .map-btn { display:inline-block; margin-top:25px; padding:12px 30px; border:1px solid var(--gold); color:var(--gold-light); font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; text-decoration:none; transition:all 0.3s; }
+        .map-btn:hover { background:var(--gold); color:var(--dark); }
+
+        /* FIRMA */
+        .firma-section { background:var(--warm-white); padding-bottom:0; }
+        .firma-intro { text-align:center; font-size:1.25rem; font-style:italic; color:var(--text-light); max-width:580px; margin:0 auto 60px; line-height:1.9; }
+        .firma-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; max-width:960px; margin:0 auto; }
+        .firma-item { position:relative; overflow:hidden; aspect-ratio:3/4; }
+        .firma-item img { width:100%; height:100%; object-fit:cover; object-position:top center; transition:transform 0.7s ease, filter 0.5s ease; filter:sepia(15%) brightness(0.97); }
+        .firma-item:hover img { transform:scale(1.04); filter:sepia(0%) brightness(1); }
+        .firma-label { position:absolute; bottom:0; left:0; right:0; padding:50px 30px 28px; background:linear-gradient(to top, rgba(26,22,18,0.85), transparent); }
+        .firma-label p { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold-light); margin-bottom:6px; }
+        .firma-label h3 { font-family:'Playfair Display',serif; font-style:italic; font-size:2rem; color:#fff; }
+
+        /* RSVP */
+        .rsvp-section { background:var(--cream); }
+        .rsvp-form { max-width:600px; margin:0 auto; background:#fff; padding:55px 50px; box-shadow:0 15px 50px rgba(0,0,0,0.07); border:1px solid rgba(184,151,90,0.15); }
+        .form-group { margin-bottom:30px; }
+        .form-group label { display:block; font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px 0; border:none; border-bottom:1px solid #ddd; background:transparent; font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--text); transition:border-color 0.3s; appearance:none; -webkit-appearance:none; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-bottom-color:var(--gold); }
+        .companion-group { background:#faf8f4; padding:25px; margin-bottom:20px; border-left:2px solid var(--gold); }
+        .companion-group h4 { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+        .companion-group .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .submit-btn { width:100%; padding:20px; background:var(--dark); color:var(--gold-light); border:none; font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:4px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; margin-top:10px; }
+        .submit-btn:hover { background:var(--gold); color:var(--dark); }
+        .submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+        .success-message { display:none; background:var(--dark); color:var(--gold-light); padding:28px; text-align:center; margin-top:20px; font-style:italic; font-size:1.2rem; line-height:1.7; }
+        .success-message.show { display:block; animation:fadeIn 0.5s ease; }
+
+        /* GALLERY */
+        .gallery-section { background:var(--warm-white); padding-bottom:0; }
+        .gallery-section .section-title { color:var(--dark); }
+        .gallery-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:50px; max-width:1200px; margin-left:auto; margin-right:auto; }
+        .gallery-item { overflow:hidden; }
+        .gallery-item img { width:100%; height:520px; object-fit:cover; object-position:center; filter:brightness(0.93) saturate(0.95); transition:all 0.6s ease; display:block; }
+        .gallery-item:hover img { filter:brightness(1.02) saturate(1.05); transform:scale(1.02); }
+
+        /* FOOTER */
+        footer { background:var(--cream); text-align:center; padding:70px 20px; border-top:1px solid rgba(184,151,90,0.25); }
+        .footer-names { font-family:'Playfair Display',serif; font-style:italic; font-size:2.8rem; color:var(--dark); margin-bottom:12px; }
+        .footer-date { font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:5px; color:var(--gold); margin-bottom:30px; }
+        .footer-heart { font-size:1.5rem; color:var(--gold); display:block; margin-bottom:20px; animation:heartbeat 2s ease-in-out infinite; }
+        footer p { font-size:1rem; color:var(--text-light); line-height:2; }
+
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
+        /* ===================== RESPONSIVE MÓVIL ===================== */
+        @media(max-width:768px) {
+            /* NAVBAR */
+            .navbar { padding:15px 20px; }
+            .nav-menu {
+                display:none;
+                position:fixed;
+                top:0; left:0; right:0; bottom:0;
+                background:rgba(26,22,18,0.97);
+                flex-direction:column;
+                justify-content:center;
+                align-items:center;
+                gap:40px;
+                z-index:15;
+            }
+            .nav-menu.active { display:flex; }
+            .nav-menu a { font-size:0.9rem; letter-spacing:4px; color:#fff; }
+            .menu-toggle { display:block; }
+
+            /* HERO — sin transform, texto centrado y visible */
+            .hero {
+                height: 100svh; /* svh respeta la barra del navegador móvil */
+                min-height: 480px;
+            }
+            .hero-bg {
+                background-attachment: scroll; /* parallax fijo causa problemas en iOS */
+                background-position: center center;
+            }
+            .hero-content {
+                transform: none; /* eliminado el translateY que cortaba el texto */
+                padding: 80px 24px 40px;
+                width: 100%;
+            }
+            .hero-subtitle { font-size: 0.65rem; letter-spacing: 4px; margin-bottom: 18px; }
+            .hero-names { font-size: clamp(2.8rem, 14vw, 4.5rem); margin-bottom: 16px; }
+            .hero-date { font-size: 0.75rem; letter-spacing: 3px; }
+
+            /* SECTIONS */
+            section { padding:60px 16px; }
+            .section-divider { margin-bottom: 40px; }
+
+            /* CEREMONY */
+            .ceremony-cards { grid-template-columns:1fr; gap:16px; }
+            .ceremony-card { padding:35px 24px; }
+
+            /* FIRMA */
+            .firma-section { padding-bottom: 0; }
+            .firma-grid { grid-template-columns:1fr; gap:4px; }
+            .firma-item {
+                aspect-ratio: 4/3; /* más ancho que alto en móvil, más cómodo */
+            }
+            .firma-label h3 { font-size: 1.6rem; }
+
+            /* RSVP */
+            .rsvp-form { padding:30px 20px; }
+            .companion-group .form-row { grid-template-columns:1fr; gap:15px; }
+
+            /* GALLERY */
+            .gallery-grid { grid-template-columns:1fr; gap:4px; }
+            .gallery-item img { height:300px; }
+
+            /* FOOTER */
+            .footer-names { font-size: 2rem; }
+        }
+
+        /* Pantallas muy pequeñas */
+        @media(max-width:380px) {
+            .hero-names { font-size: 2.4rem; }
+            .hero-subtitle { letter-spacing: 3px; font-size: 0.6rem; }
+            .rsvp-form { padding: 24px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-logo">M.T. &amp; E.</div>
+    <ul class="nav-menu" id="navMenu">
+        <li><a href="#invitacion">Invitación</a></li>
+        <li><a href="#ceremonia">Ceremonia</a></li>
+        <li><a href="#la-firma">La Firma</a></li>
+        <li><a href="#asistencia">Asistencia</a></li>
+        <li><a href="#galeria">Galería</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="hero" id="invitacion">
+    <div class="hero-bg" style="background-image: url('images/principal.jpeg');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <p class="hero-subtitle">Os invitamos a nuestra boda</p>
+        <h1 class="hero-names">Marí Tere<br><span>&amp;</span><br>Eduardo</h1>
+        <div class="hero-divider"></div>
+        <p class="hero-date">XVII &middot; X &middot; MMXXVI</p>
+    </div>
+    <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Descubrir</span>
+    </div>
+</section>
+
+<section class="ceremony" id="ceremonia">
+    <div class="ceremony-overlay" style="background-image:url('images/principal 2.jpeg')"></div>
+    <div class="container">
+        <p class="section-label">El Gran Día</p>
+        <h2 class="section-title">Detalles del Evento</h2>
+        <div class="section-divider"></div>
+        <div class="ceremony-cards">
+            <div class="ceremony-card">
+                <div class="icon">💒</div>
+                <h3>Ceremonia y Convite</h3>
+                <p class="highlight">Sábado, 17 de octubre de 2026</p>
+                <p>19:00 horas</p>
+                <p style="margin-top:15px">Choza de Correro<br>Benalup, Casas Viejas</p>
+            </div>
+            <div class="ceremony-card">
+                <div class="icon">📍</div>
+                <h3>Ubicación</h3>
+                <p>La Choza de Correro</p>
+                <p>A-2226, 11190<br>Benalup-Casas Viejas<br>Cádiz, España</p>
+                <a href="https://maps.apple.com/?address=A-2226,%2011190%20Benalup-Casas%20Viejas,%20C%C3%A1diz,%20Espa%C3%B1a&ll=36.341499,-5.804565&q=La%20Choza%20de%20Correro" target="_blank" class="map-btn">Ver en el Mapa</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="firma-section" id="la-firma">
+    <div class="container">
+        <p class="section-label">Un momento eterno</p>
+        <h2 class="section-title">La Firma</h2>
+        <div class="section-divider"></div>
+        <p class="firma-intro">Con la pluma entre los dedos y el corazón en los labios, sellaron su amor ante la ley y ante todos los que les quieren.</p>
+    </div>
+    <div class="firma-grid">
+        <div class="firma-item">
+            <img src="./images/firma tata.jpeg" alt="Firma de Marí Tere">
+            <div class="firma-label">
+                <p>Su firma</p>
+                <h3>Marí Tere</h3>
+            </div>
+        </div>
+        <div class="firma-item">
+            <img src="./images/firma edu.jpeg" alt="Firma de Eduardo">
+            <div class="firma-label">
+                <p>Su firma</p>
+                <h3>Eduardo</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="rsvp-section" id="asistencia">
+    <div class="container">
+        <p class="section-label">Esperamos tu respuesta</p>
+        <h2 class="section-title">Confirma tu Asistencia</h2>
+        <div class="section-divider"></div>
+        <div class="rsvp-form">
+            <form id="rsvpForm">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre y apellidos">
+                </div>
+                <div class="form-group">
+                    <label>¿Asistirás?</label>
+                    <select id="asistencia2" name="asistencia" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="si">Sí, asistiré con gusto</option>
+                        <option value="no">No podré asistir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>¿Vendrás acompañado/a?</label>
+                    <select id="conAcompanante" name="conAcompanante" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="no">No, asistiré solo/a</option>
+                        <option value="si">Sí, vendré con acompañante(s)</option>
+                    </select>
+                </div>
+                <div id="acompanantesSection" style="display:none;">
+                    <div class="form-group">
+                        <label>¿Cuántos adultos?</label>
+                        <select id="numAdultos" name="numAdultos">
+                            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+                    </div>
+                    <div id="adultosInputs"></div>
+                    <div class="form-group">
+                        <label>¿Cuántos niños?</label>
+                        <select id="numNinos" name="numNinos">
+                            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+                    </div>
+                    <div id="ninosInputs"></div>
+                </div>
+                <div class="form-group">
+                    <label>Mensaje para los novios</label>
+                    <textarea id="mensaje" name="mensaje" rows="3" placeholder="Comparte tus buenos deseos..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Confirmar Asistencia</button>
+            </form>
+            <div class="success-message" id="successMessage">
+                ✨ ¡Gracias por confirmar! Nos encanta que seas parte de nuestro día especial.
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="gallery-section" id="galeria">
+    <div class="container">
+        <p class="section-label">Momentos nuestros</p>
+        <h2 class="section-title">Nuestra Historia</h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="gallery-grid">
+        <div class="gallery-item">
+            <img src="./images/2.jpeg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="./images/principal 2.jpeg" alt="">
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-names">Marí Tere &amp; Eduardo</div>
+    <div class="footer-date">XVII &middot; X &middot; MMXXVI</div>
+    <span class="footer-heart">♥</span>
+    <p>Con todo nuestro amor, os esperamos</p>
+    <p style="margin-top:8px;font-size:0.9rem;opacity:0.6;">Choza de Correro &middot; Benalup, Cádiz</p>
+</footer>
+
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+menuToggle.addEventListener('click', () => navMenu.classList.toggle('active'));
+document.querySelectorAll('.nav-menu a').forEach(a => a.addEventListener('click', () => navMenu.classList.remove('active')));
+
+const conAcomp = document.getElementById('conAcompanante');
+const acompSec = document.getElementById('acompanantesSection');
+const numAdul = document.getElementById('numAdultos');
+const numNin = document.getElementById('numNinos');
+const adulInputs = document.getElementById('adultosInputs');
+const ninInputs = document.getElementById('ninosInputs');
+
+conAcomp.addEventListener('change', function() {
+    acompSec.style.display = this.value === 'si' ? 'block' : 'none';
+    if(this.value !== 'si') { adulInputs.innerHTML = ''; ninInputs.innerHTML = ''; }
+});
+
+numAdul.addEventListener('change', function() {
+    adulInputs.innerHTML = '';
+    for(let i=1;i<=parseInt(this.value);i++) {
+        adulInputs.innerHTML += '<div class="companion-group"><h4>Adulto '+i+'</h4><div class="form-row"><div><label>Nombre</label><input type="text" name="adulto'+i+'_nombre" required placeholder="Nombre"></div><div><label>Apellidos</label><input type="text" name="adulto'+i+'_apellido" required placeholder="Apellidos"></div></div></div>';
+    }
+});
+
+numNin.addEventListener('change', function() {
+    ninInputs.innerHTML = '';
+    for(let i=1;i<=parseInt(this.value);i++) {
+        ninInputs.innerHTML += '<div class="companion-group"><h4>Niño/a '+i+'</h4><div class="form-row"><div><label>Nombre</label><input type="text" name="nino'+i+'_nombre" required placeholder="Nombre"></div><div><label>Apellidos</label><input type="text" name="nino'+i+'_apellido" required placeholder="Apellidos"></div></div><div style="margin-top:15px"><label>Edad</label><input type="number" name="nino'+i+'_edad" required placeholder="Edad" min="0" max="17" style="max-width:120px"></div></div>';
+    }
+});
+
+document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.submit-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    const nombre = document.getElementById('nombre').value;
+    const asist = document.getElementById('asistencia2').value;
+    const acomp = document.getElementById('conAcompanante').value;
+    const msg = document.getElementById('mensaje').value;
+    const adultos = [], ninos = [];
+    const na = parseInt(numAdul.value)||0, nn = parseInt(numNin.value)||0;
+    for(let i=1;i<=na;i++) {
+        const n = document.querySelector('[name=adulto'+i+'_nombre]');
+        const a = document.querySelector('[name=adulto'+i+'_apellido]');
+        if(n) adultos.push(n.value.trim() + ' ' + (a?a.value.trim():''));
+    }
+    for(let i=1;i<=nn;i++) {
+        const n = document.querySelector('[name=nino'+i+'_nombre]');
+        const a = document.querySelector('[name=nino'+i+'_apellido]');
+        const ed = document.querySelector('[name=nino'+i+'_edad]');
+        if(n) ninos.push({ nombre: n.value.trim()+' '+(a?a.value.trim():''), edad: ed?ed.value:'' });
+    }
+
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mojylqkr';
+    const payload = {
+        nombre, asistencia: asist, acompanante: acomp,
+        adultos: adultos.join(' | '),
+        ninos: ninos.map(n=>n.nombre+' ('+n.edad+' años)').join(' | '),
+        mensaje: msg,
+        total_personas: 1 + adultos.length + ninos.length
+    };
+
+    try {
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if(res.ok) {
+            document.getElementById('successMessage').classList.add('show');
+            this.reset();
+            acompSec.style.display = 'none';
+            adulInputs.innerHTML = '';
+            ninInputs.innerHTML = '';
+            setTimeout(() => document.getElementById('successMessage').classList.remove('show'), 7000);
+        } else {
+            alert('Hubo un problema al enviar. Por favor intenta de nuevo.');
+        }
+    } catch(err) {
+        alert('Error de conexión. Por favor intenta de nuevo.');
+    }
+    btn.textContent = originalText;
+    btn.disabled = false;
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+        e.preventDefault();
+        const t = document.querySelector(this.getAttribute('href'));
+        if(t) window.scrollTo({top: t.offsetTop - 70, behavior:'smooth'});
+    });
+});
+</script>
+</body>
+</html>

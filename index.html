@@ -229,7 +229,9 @@
     </style>
 </head>
 <body>
-
+<audio id="weddingMusic" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
 <nav class="navbar">
     <div class="nav-logo">M.T. &amp; E.</div>
     <ul class="nav-menu" id="navMenu">
@@ -484,6 +486,24 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if(t) window.scrollTo({top: t.offsetTop - 70, behavior:'smooth'});
     });
 });
+    const music = document.getElementById('weddingMusic');
+
+// Función para intentar reproducir
+const playMusic = () => {
+    music.play().then(() => {
+        // Si tiene éxito, eliminamos los escuchadores para que no se reinicie
+        document.removeEventListener('click', playMusic);
+        document.removeEventListener('touchstart', playMusic);
+        document.removeEventListener('scroll', playMusic);
+    }).catch(error => {
+        console.log("El navegador bloqueó el autoplay, esperando interacción...");
+    });
+};
+
+// Escuchamos cualquier interacción del usuario
+document.addEventListener('click', playMusic);
+document.addEventListener('touchstart', playMusic); // Para móviles
+document.addEventListener('scroll', playMusic);    // Por si solo hacen scroll
 </script>
 </body>
 </html>

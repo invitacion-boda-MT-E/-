@@ -226,12 +226,51 @@
             .hero-subtitle { letter-spacing: 3px; font-size: 0.6rem; }
             .rsvp-form { padding: 24px 14px; }
         }
+        /* Botón de música flotante */
+.music-player {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 2000;
+}
+
+.music-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--dark);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: all 0.4s ease;
+}
+
+/* Estado cuando la música está sonando */
+.music-btn.playing {
+    animation: pulse-gold 2s infinite;
+    background: var(--gold);
+    color: var(--dark);
+}
+
+@keyframes pulse-gold {
+    0% { box-shadow: 0 0 0 0 rgba(184, 151, 90, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(184, 151, 90, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(184, 151, 90, 0); }
+}
     </style>
 </head>
 <body>
-<audio id="weddingMusic" loop>
-    <source src="musica.mp3" type="audio/mpeg">
-</audio>
+<div class="music-player">
+    <button id="musicToggle" class="music-btn">♪</button>
+    <audio id="weddingMusic" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+</div>
 <nav class="navbar">
     <div class="nav-logo">M.T. &amp; E.</div>
     <ul class="nav-menu" id="navMenu">
@@ -486,24 +525,51 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if(t) window.scrollTo({top: t.offsetTop - 70, behavior:'smooth'});
     });
 });
-    const music = document.getElementById('weddingMusic');
+const music = document.getElementById('weddingMusic');
+const musicBtn = document.getElementById('musicToggle');
+let isPlaying = false;
 
-// Función para intentar reproducir
-const playMusic = () => {
-    music.play().then(() => {
-        // Si tiene éxito, eliminamos los escuchadores para que no se reinicie
-        document.removeEventListener('click', playMusic);
-        document.removeEventListener('touchstart', playMusic);
-        document.removeEventListener('scroll', playMusic);
-    }).catch(error => {
-        console.log("El navegador bloqueó el autoplay, esperando interacción...");
-    });
-};
+// Función para activar la música
+function playMusic() {
+    if (!isPlaying) {
+        music.play().then(() => {
+            isPlaying = true;
+            musicBtn.classList.add('playing');
+            musicBtn.textContent = 'II'; // Cambia el icono a pausa
+            
+            // Una vez que arranca, quitamos los escuchadores para no reiniciar
+            removeInteractionListeners();
+        }).catch(error => {
+            console.log("Esperando interacción del usuario para sonar...");
+        });
+    }
+}
 
-// Escuchamos cualquier interacción del usuario
+// Control manual del botón (Play/Pausa)
+musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Evita conflictos con otros clics
+    if (isPlaying) {
+        music.pause();
+        musicBtn.classList.remove('playing');
+        musicBtn.textContent = '♪';
+    } else {
+        music.play();
+        musicBtn.classList.add('playing');
+        musicBtn.textContent = 'II';
+    }
+    isPlaying = !isPlaying;
+});
+
+// Escuchadores para el inicio automático
+function removeInteractionListeners() {
+    document.removeEventListener('click', playMusic);
+    document.removeEventListener('touchstart', playMusic);
+    document.removeEventListener('scroll', playMusic);
+}
+
 document.addEventListener('click', playMusic);
-document.addEventListener('touchstart', playMusic); // Para móviles
-document.addEventListener('scroll', playMusic);    // Por si solo hacen scroll
+document.addEventListener('touchstart', playMusic);
+document.addEventListener('scroll', playMusic);
 </script>
 </body>
 </html>

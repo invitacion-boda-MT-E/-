@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>M.T. & E. · Mensajes de Voz (Novios)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        softgray: '#F4F1EA',
+                        darkgray: '#2C2A29',
+                        warmgold: '#C5A880',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FDFBF7; color: #2C2A29; font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .serif-font { font-family: 'Cormorant Garamond', serif; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="selection:bg-warmgold selection:text-white min-h-screen flex flex-col">
+
+    <!-- Navegación superior -->
+    <nav class="w-full py-6 px-8 flex justify-between items-center border-b border-warmgold/20 bg-cream/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="serif-font text-2xl tracking-widest font-semibold text-darkgray">M.T. & E.</div>
+        <a href="buzon-voz-boda.html" class="text-xs uppercase tracking-widest border border-warmgold text-darkgray px-4 py-2 hover:bg-warmgold hover:text-white transition-all rounded-full">← Volver al buzón</a>
+    </nav>
+
+    <main class="flex-1 w-full">
+
+        <!-- LOGIN -->
+        <section id="loginSection" class="max-w-md mx-auto px-6 py-24 text-center">
+            <span class="text-3xl mb-3 block">🔒</span>
+            <p class="uppercase tracking-[0.25em] text-xs text-warmgold mb-3 font-medium">Zona privada</p>
+            <h1 class="serif-font text-4xl text-darkgray mb-3">Mensajes para los Novios</h1>
+            <div class="w-16 h-[1px] bg-warmgold mx-auto my-5"></div>
+            <p class="text-xs text-darkgray/60 mb-8">Introduce la contraseña para escuchar todos los mensajes guardados.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-warmgold/20 space-y-4">
+                <input type="password" id="adminPassword" placeholder="Contraseña" onkeydown="if(event.key==='Enter') verificarPassword()" class="w-full px-4 py-3 rounded-lg border border-warmgold/30 focus:outline-none focus:border-warmgold bg-cream/50 text-sm">
+                <button onclick="verificarPassword()" class="w-full bg-warmgold text-white py-3 rounded-lg uppercase text-xs tracking-widest hover:bg-darkgray transition-colors">Acceder</button>
+            </div>
+        </section>
+
+        <!-- PANEL -->
+        <section id="dashboardSection" class="hidden max-w-3xl mx-auto px-6 py-14">
+            <div class="text-center mb-10">
+                <p class="uppercase tracking-[0.25em] text-xs text-warmgold mb-3 font-medium">Buzón de Voz de las Mesas</p>
+                <h1 class="serif-font text-4xl md:text-5xl text-darkgray">Mensajes Recibidos</h1>
+                <div class="w-16 h-[1px] bg-warmgold mx-auto my-5"></div>
+                <p class="serif-font text-2xl text-darkgray/80"><span id="totalMessages">0</span> mensajes de cariño</p>
+                <div class="flex justify-center gap-4 mt-5">
+                    <button onclick="cargarMensajes()" class="text-xs uppercase tracking-widest text-darkgray/70 hover:text-warmgold transition-colors">↻ Actualizar</button>
+                    <span class="text-warmgold/40">|</span>
+                    <button onclick="cerrarSesion()" class="text-xs uppercase tracking-widest text-red-500 hover:underline">Cerrar sesión</button>
+                </div>
+            </div>
+
+            <div id="messagesList" class="space-y-6"></div>
+        </section>
+    </main>
+
+    <footer class="bg-softgray/60 py-10 px-6 text-center border-t border-warmgold/20 mt-16">
+        <h3 class="serif-font text-xl text-darkgray mb-2">Marí Tere & Eduardo</h3>
+        <p class="text-xs tracking-widest text-warmgold uppercase">XVII · X · MMXXVI</p>
+    </footer>
+
+    <script>
+        // ⚠️ Pega aquí LOS MISMOS dos valores que tienes en buzon-voz-boda.html
+const SUPABASE_URL = "https://htscaxjtgulwzeqvsjmf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PSvxW7TG9KHbWFUzH8sWpw_C7FcB0cf";
+        const BUCKET = "mensajes";
+        const PASSWORD = "boda2026";
+
+        const supabaseListo = SUPABASE_URL !== "TU_PROJECT_URL" && SUPABASE_KEY !== "TU_ANON_KEY";
+        const sb = supabaseListo ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+        function escapeHtml(texto) {
+            const d = document.createElement('div');
+            d.textContent = texto;
+            return d.innerHTML;
+        }
+
+        function verificarPassword() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === PASSWORD) {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                window.scrollTo(0, 0);
+                cargarMensajes();
+            } else {
+                alert('Contraseña incorrecta.');
+            }
+        }
+
+        function cerrarSesion() {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('messagesList').innerHTML = '';
+        }
+
+        async function cargarMensajes() {
+            const container = document.getElementById('messagesList');
+
+            if (!supabaseListo) {
+                container.innerHTML = '<p class="text-xs text-red-500 text-center py-10">Falta pegar SUPABASE_URL y SUPABASE_KEY en este archivo.</p>';
+                return;
+            }
+
+            container.innerHTML = '<p class="text-xs text-darkgray/60 text-center py-10">Cargando mensajes…</p>';
+
+            try {
+                const { data: mensajes, error } = await sb.from('mensajes').select('*').order('fecha', { ascending: false });
+                if (error) throw error;
+
+                document.getElementById('totalMessages').innerText = mensajes.length;
+                container.innerHTML = '';
+
+                if (mensajes.length === 0) {
+                    container.innerHTML = '<p class="text-sm text-darkgray/60 text-center py-16">Aún no hay mensajes de voz guardados.</p>';
+                    return;
+                }
+
+                mensajes.forEach(m => {
+                    const f = new Date(m.fecha);
+                    const fechaTexto = f.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+                        + ' · ' + f.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+                    const card = document.createElement('article');
+                    card.className = 'bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-warmgold/20';
+                    card.innerHTML = `
+                        <div class="text-center mb-5">
+                            <span class="text-xl block mb-1">🎙️</span>
+                            <h2 class="serif-font text-3xl text-darkgray">${escapeHtml(m.nombre)}</h2>
+                            <p class="text-[11px] uppercase tracking-widest text-warmgold mt-1">${fechaTexto}</p>
+                        </div>
+                        <div class="bg-softgray/50 p-4 rounded-xl border border-warmgold/10">
+                            <audio controls preload="none" src="${encodeURI(m.audio_url)}" class="w-full"></audio>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <a href="${encodeURI(m.audio_url)}" target="_blank" rel="noopener" download class="text-[11px] uppercase tracking-widest text-darkgray/60 hover:text-warmgold transition-colors">⬇ Descargar</a>
+                            <button class="delete-btn text-[11px] uppercase tracking-widest text-red-500 hover:underline">Eliminar</button>
+                        </div>
+                    `;
+                    card.querySelector('.delete-btn').addEventListener('click', () => eliminarMensaje(m.id, m.storage_path, m.nombre));
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p class="text-xs text-red-500 text-center py-10">No se pudieron cargar los mensajes: ' + escapeHtml(err.message || 'error desconocido') + '</p>';
+            }
+        }
+
+        async function eliminarMensaje(id, storagePath, nombre) {
+            if (!confirm('¿Seguro que quieres eliminar el mensaje de "' + nombre + '"? No se puede deshacer.')) return;
+            try {
+                const { error: errFila } = await sb.from('mensajes').delete().eq('id', id);
+                if (errFila) throw errFila;
+                if (storagePath) {
+                    await sb.storage.from(BUCKET).remove([storagePath]);
+                }
+                cargarMensajes();
+            } catch (err) {
+                console.error(err);
+                alert('No se pudo eliminar el mensaje. Inténtalo de nuevo.');
+            }
+        }
+    </script>
+</body>
+</html>

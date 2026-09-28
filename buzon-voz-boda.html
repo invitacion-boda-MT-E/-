@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.T. & E. · Buzón de Voz de Boda</title>
+    <!-- Fuentes elegantes idénticas a la invitación -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS para diseño moderno y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        softgray: '#F4F1EA',
+                        darkgray: '#2C2A29',
+                        warmgold: '#C5A880',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FDFBF7; color: #2C2A29; font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .serif-font { font-family: 'Cormorant Garamond', serif; }
+        .pulse-recording { animation: pulseGlow 1.5s infinite; }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(197, 168, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
+        }
+    </style>
+    <!-- SDK de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="selection:bg-warmgold selection:text-white">
+
+    <!-- Navegación superior -->
+    <nav class="w-full py-6 px-8 flex justify-between items-center border-b border-warmgold/20 bg-cream/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="serif-font text-2xl tracking-widest font-semibold text-darkgray">M.T. & E.</div>
+        <button onclick="abrirModalNovios()" class="text-xs uppercase tracking-widest border border-warmgold text-darkgray px-4 py-2 hover:bg-warmgold hover:text-white transition-all rounded-full">
+            ✨ Acceso Novios
+        </button>
+    </nav>
+
+    <!-- Sección Principal / Hero -->
+    <header class="min-h-[75vh] flex flex-col items-center justify-center text-center px-6 py-16 relative bg-cover bg-center" style="background-image: linear-gradient(rgba(253, 251, 247, 0.86), rgba(253, 251, 247, 0.86)), url('https://invitacion-boda-mt-e.github.io/-/images/principal%202.jpeg');">
+        <p class="uppercase tracking-[0.25em] text-sm text-warmgold mb-4 font-medium">Buzón de Voz de las Mesas</p>
+        <h1 class="text-5xl md:text-7xl serif-font font-normal tracking-wide text-darkgray mb-2">
+            Marí Tere <span class="text-warmgold italic font-light">&</span> Eduardo
+        </h1>
+        <p class="uppercase tracking-[0.3em] text-xs text-darkgray/60 mb-6">XVII · X · MMXXVI</p>
+        <div class="w-16 h-[1px] bg-warmgold my-4"></div>
+        <p class="max-w-xl text-darkgray/80 text-sm md:text-base font-light leading-relaxed mb-8">
+            Queremos escuchar vuestras voces, risas y mejores deseos para este gran día. Dejadnos un mensaje desde vuestra mesa para guardarlo como un recuerdo eterno.
+        </p>
+        <a href="#grabadora" class="bg-darkgray text-cream px-8 py-3 rounded-full uppercase text-xs tracking-widest hover:bg-warmgold transition-colors">
+            Dejar Mensaje de Voz
+        </a>
+    </header>
+
+    <!-- Pequeña sección de fotos, a modo de la invitación -->
+    <section class="max-w-4xl mx-auto px-6 py-16 text-center">
+        <p class="uppercase tracking-[0.25em] text-xs text-warmgold mb-2">Momentos nuestros</p>
+        <h2 class="serif-font text-3xl text-darkgray mb-8">Gracias por acompañarnos</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <img src="https://invitacion-boda-mt-e.github.io/-/images/2.jpeg" alt="Marí Tere y Eduardo" class="w-full h-72 object-cover rounded-2xl shadow-sm border border-warmgold/20">
+            <img src="https://invitacion-boda-mt-e.github.io/-/images/principal%202.jpeg" alt="Marí Tere y Eduardo" class="w-full h-72 object-cover rounded-2xl shadow-sm border border-warmgold/20">
+        </div>
+    </section>
+
+    <!-- Sección de Grabación -->
+    <main id="grabadora" class="max-w-2xl mx-auto px-6 pb-16">
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-warmgold/20 relative">
+            <div class="text-center mb-8">
+                <span class="text-3xl mb-2 block">🎙️</span>
+                <h2 class="serif-font text-3xl text-darkgray">Dedicatoria para los Novios</h2>
+                <p class="text-xs text-darkgray/60 mt-1 uppercase tracking-wider">Paso a paso para dejar tu audio</p>
+            </div>
+
+            <!-- Formulario de grabación sin recargas -->
+            <form id="voiceForm" onsubmit="event.preventDefault();" class="space-y-6">
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-darkgray/80 mb-2 font-medium">Tu Nombre / Nº de Mesa:</label>
+                    <input type="text" id="guestName" required placeholder="Ej. Familia Gómez o Mesa 4" class="w-full px-4 py-3 rounded-lg border border-warmgold/30 focus:outline-none focus:border-warmgold bg-cream/50 text-darkgray text-sm">
+                </div>
+
+                <!-- Controles de Grabación -->
+                <div class="bg-softgray/50 p-6 rounded-xl border border-warmgold/10 text-center space-y-4">
+                    <div id="statusText" class="text-xs uppercase tracking-widest text-warmgold font-semibold">Listo para grabar</div>
+                    <div id="timerDisplay" class="serif-font text-4xl text-darkgray font-medium">00:00</div>
+
+                    <div class="flex justify-center gap-4 pt-2">
+                        <button type="button" id="recordBtn" onclick="toggleRecording()" class="bg-warmgold text-white px-6 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-darkgray transition-all shadow-md flex items-center gap-2">
+                            <span>🔴</span> Iniciar Grabación
+                        </button>
+                        <button type="button" id="stopBtn" onclick="stopRecording()" disabled class="bg-gray-300 text-gray-500 px-6 py-3 rounded-full text-xs uppercase tracking-widest cursor-not-allowed transition-all">
+                            Detener
+                        </button>
+                    </div>
+
+                    <!-- Reproductor de Vista Previa -->
+                    <div id="previewContainer" class="hidden mt-4 pt-4 border-t border-warmgold/20">
+                        <p class="text-xs text-darkgray/70 mb-2">Vista previa de tu mensaje:</p>
+                        <audio id="audioPreview" controls class="w-full"></audio>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="button" id="submitBtn" onclick="guardarMensaje()" disabled class="w-full bg-darkgray/30 text-white py-4 rounded-xl uppercase text-xs tracking-widest cursor-not-allowed transition-all">
+                    Enviar Mensaje a los Novios
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-softgray/60 py-12 px-6 text-center border-t border-warmgold/20">
+        <h3 class="serif-font text-xl text-darkgray mb-2">Marí Tere & Eduardo</h3>
+        <p class="text-xs tracking-widest text-warmgold uppercase mb-4">XVII · X · MMXXVI</p>
+        <p class="text-xs text-darkgray/60">Choza de Correro · Benalup, Cádiz</p>
+    </footer>
+
+    <!-- MODAL DE ACCESO NOVIOS -->
+    <div id="noviosModal" class="fixed inset-0 bg-darkgray/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white max-w-xl w-full p-8 rounded-2xl shadow-xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalNovios()" class="absolute top-4 right-4 text-darkgray/60 hover:text-darkgray text-lg font-bold">✕</button>
+
+            <div id="loginSection">
+                <h3 class="serif-font text-2xl text-darkgray mb-2 text-center">Panel Privado de los Novios</h3>
+                <p class="text-xs text-darkgray/60 text-center mb-6">Introduce la contraseña para escuchar todos los mensajes guardados.</p>
+                <div class="space-y-4">
+                    <input type="password" id="adminPassword" placeholder="Contraseña" class="w-full px-4 py-3 rounded-lg border border-warmgold/30 text-sm">
+                    <button onclick="verificarPassword()" class="w-full bg-warmgold text-white py-3 rounded-lg uppercase text-xs tracking-widest hover:bg-darkgray transition-colors">Acceder</button>
+                </div>
+            </div>
+
+            <div id="dashboardSection" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b pb-4">
+                    <h3 class="serif-font text-2xl text-darkgray">Mensajes Recibidos (<span id="totalMessages">0</span>)</h3>
+                    <button onclick="cerrarSesionNovios()" class="text-xs text-red-500 uppercase tracking-wider">Cerrar Sesión</button>
+                </div>
+                <div id="messagesList" class="space-y-4">
+                    <!-- Aquí se cargan dinámicamente los audios guardados -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Lógica y Grabación de Audio -->
+    <script>
+        // ⚠️ SUSTITUYE estos dos valores por los de tu proyecto en Supabase
+        // (Project Settings > API: "Project URL" y la clave "anon public" / "publishable")
+const SUPABASE_URL = "https://htscaxjtgulwzeqvsjmf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_...";
+        const BUCKET = "mensajes";
+
+        const supabaseListo = SUPABASE_URL !== "TU_PROJECT_URL" && SUPABASE_KEY !== "TU_ANON_KEY";
+        const sb = supabaseListo ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+        function escapeHtml(texto) {
+            const d = document.createElement('div');
+            d.textContent = texto;
+            return d.innerHTML;
+        }
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioBlob = null;
+        let audioUrl = '';
+        let timerInterval;
+        let seconds = 0;
+
+        async function toggleRecording() {
+            const nameInput = document.getElementById('guestName').value.trim();
+            if (!nameInput) {
+                alert('Por favor, escribe tu nombre o número de mesa antes de grabar.');
+                document.getElementById('guestName').focus();
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const tipoReal = (mediaRecorder.mimeType || 'audio/webm').split(';')[0];
+                    audioBlob = new Blob(audioChunks, { type: tipoReal });
+                    audioUrl = URL.createObjectURL(audioBlob);
+                    const preview = document.getElementById('audioPreview');
+                    preview.src = audioUrl;
+                    document.getElementById('previewContainer').classList.remove('hidden');
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').classList.remove('bg-darkgray/30', 'cursor-not-allowed');
+                    document.getElementById('submitBtn').classList.add('bg-warmgold', 'hover:bg-darkgray', 'cursor-pointer');
+                };
+
+                mediaRecorder.start();
+                seconds = 0;
+                startTimer();
+
+                document.getElementById('recordBtn').disabled = true;
+                document.getElementById('recordBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('stopBtn').classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                document.getElementById('stopBtn').classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+                document.getElementById('statusText').innerText = "Grabando mensaje...";
+                document.getElementById('statusText').classList.add('pulse-recording');
+
+            } catch (err) {
+                alert('No se pudo acceder al micrófono. Por favor, permite el acceso en tu navegador.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            clearInterval(timerInterval);
+
+            document.getElementById('recordBtn').disabled = false;
+            document.getElementById('recordBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('stopBtn').classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+            document.getElementById('stopBtn').classList.remove('bg-red-500', 'text-white');
+            document.getElementById('statusText').innerText = "Grabación finalizada. ¡Escúchala abajo!";
+            document.getElementById('statusText').classList.remove('pulse-recording');
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                seconds++;
+                let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                let secs = (seconds % 60).toString().padStart(2, '0');
+                timerDisplay.innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        async function guardarMensaje() {
+            const name = document.getElementById('guestName').value.trim();
+            if (!audioBlob || !name) return;
+
+            if (!supabaseListo) {
+                alert('Falta configurar Supabase en este archivo (SUPABASE_URL y SUPABASE_KEY). Revisa las instrucciones antes de usar el buzón en la boda.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const textoOriginal = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Enviando…';
+
+            try {
+                const extension = audioBlob.type.includes('mp4') ? 'mp4' : (audioBlob.type.includes('ogg') ? 'ogg' : 'webm');
+                const nombreArchivo = `${Date.now()}_${name.replace(/[^a-zA-Z0-9]+/g, '_')}.${extension}`;
+
+                const { error: errSubida } = await sb.storage.from(BUCKET).upload(nombreArchivo, audioBlob, { contentType: audioBlob.type });
+                if (errSubida) throw errSubida;
+
+                const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(nombreArchivo);
+
+                const { error: errFila } = await sb.from('mensajes').insert({
+                    nombre: name,
+                    audio_url: urlData.publicUrl,
+                    storage_path: nombreArchivo
+                });
+                if (errFila) throw errFila;
+
+                alert('¡Mensaje enviado con éxito! Muchas gracias por vuestro cariño para Marí Tere y Eduardo.');
+
+                document.getElementById('voiceForm').reset();
+                document.getElementById('previewContainer').classList.add('hidden');
+                document.getElementById('timerDisplay').innerText = "00:00";
+                document.getElementById('statusText').innerText = "Listo para grabar";
+                submitBtn.classList.remove('bg-warmgold', 'hover:bg-darkgray', 'cursor-pointer');
+                submitBtn.classList.add('bg-darkgray/30', 'cursor-not-allowed');
+                audioBlob = null;
+            } catch (err) {
+                console.error(err);
+                alert('Hubo un problema al enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.');
+                submitBtn.disabled = false;
+            } finally {
+                submitBtn.innerText = textoOriginal;
+            }
+        }
+
+        function abrirModalNovios() {
+            document.getElementById('noviosModal').classList.remove('hidden');
+        }
+
+        function cerrarModalNovios() {
+            document.getElementById('noviosModal').classList.add('hidden');
+        }
+
+        function verificarPassword() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === 'boda2026') {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                cargarMensajesAdmin();
+            } else {
+                alert('Contraseña incorrecta.');
+            }
+        }
+
+        function cerrarSesionNovios() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        async function cargarMensajesAdmin() {
+            const container = document.getElementById('messagesList');
+
+            if (!supabaseListo) {
+                container.innerHTML = '<p class="text-xs text-red-500 text-center py-6">Falta configurar Supabase en este archivo (SUPABASE_URL y SUPABASE_KEY).</p>';
+                return;
+            }
+
+            container.innerHTML = '<p class="text-xs text-darkgray/60 text-center py-6">Cargando mensajes…</p>';
+
+            try {
+                const { data: mensajes, error } = await sb.from('mensajes').select('*').order('fecha', { ascending: false });
+                if (error) throw error;
+
+                document.getElementById('totalMessages').innerText = mensajes.length;
+                container.innerHTML = '';
+
+                if (mensajes.length === 0) {
+                    container.innerHTML = '<p class="text-xs text-darkgray/60 text-center py-6">Aún no hay mensajes de voz guardados.</p>';
+                    return;
+                }
+
+                mensajes.forEach(m => {
+                    const f = new Date(m.fecha);
+                    const fechaTexto = f.toLocaleDateString() + ' ' + f.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                    const item = document.createElement('div');
+                    item.className = 'bg-cream p-4 rounded-xl border border-warmgold/20 flex flex-col gap-3';
+                    item.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-medium text-darkgray text-sm">🎙️ ${escapeHtml(m.nombre)}</h4>
+                            <span class="text-[10px] text-darkgray/50">${fechaTexto}</span>
+                        </div>
+                        <audio controls preload="none" src="${encodeURI(m.audio_url)}" class="w-full"></audio>
+                        <button class="delete-btn text-[10px] text-red-500 uppercase tracking-wider text-right hover:underline">Eliminar mensaje</button>
+                    `;
+                    item.querySelector('.delete-btn').addEventListener('click', () => eliminarMensaje(m.id, m.storage_path));
+                    container.appendChild(item);
+                });
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p class="text-xs text-red-500 text-center py-6">No se pudieron cargar los mensajes. Revisa tu conexión.</p>';
+            }
+        }
+
+        async function eliminarMensaje(id, storagePath) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este mensaje?')) return;
+            try {
+                const { error: errFila } = await sb.from('mensajes').delete().eq('id', id);
+                if (errFila) throw errFila;
+                if (storagePath) {
+                    await sb.storage.from(BUCKET).remove([storagePath]);
+                }
+                cargarMensajesAdmin();
+            } catch (err) {
+                console.error(err);
+                alert('No se pudo eliminar el mensaje. Inténtalo de nuevo.');
+            }
+        }
+    </script>
+</body>
+</html>

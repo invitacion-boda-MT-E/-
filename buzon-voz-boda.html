@@ -44,9 +44,7 @@
     <!-- Navegación superior -->
     <nav class="w-full py-6 px-8 flex justify-between items-center border-b border-warmgold/20 bg-cream/90 backdrop-blur-md sticky top-0 z-50">
         <div class="serif-font text-2xl tracking-widest font-semibold text-darkgray">M.T. & E.</div>
-        <button onclick="abrirModalNovios()" class="text-xs uppercase tracking-widest border border-warmgold text-darkgray px-4 py-2 hover:bg-warmgold hover:text-white transition-all rounded-full">
-            ✨ Acceso Novios
-        </button>
+        <a href="novios.html" class="text-xs uppercase tracking-widest border border-warmgold text-darkgray px-4 py-2 hover:bg-warmgold hover:text-white transition-all rounded-full">✨ Acceso Novios</a>
     </nav>
 
     <!-- Sección Principal / Hero -->
@@ -127,48 +125,16 @@
         <p class="text-xs text-darkgray/60">Choza de Correro · Benalup, Cádiz</p>
     </footer>
 
-    <!-- MODAL DE ACCESO NOVIOS -->
-    <div id="noviosModal" class="fixed inset-0 bg-darkgray/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white max-w-xl w-full p-8 rounded-2xl shadow-xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalNovios()" class="absolute top-4 right-4 text-darkgray/60 hover:text-darkgray text-lg font-bold">✕</button>
-
-            <div id="loginSection">
-                <h3 class="serif-font text-2xl text-darkgray mb-2 text-center">Panel Privado de los Novios</h3>
-                <p class="text-xs text-darkgray/60 text-center mb-6">Introduce la contraseña para escuchar todos los mensajes guardados.</p>
-                <div class="space-y-4">
-                    <input type="password" id="adminPassword" placeholder="Contraseña" class="w-full px-4 py-3 rounded-lg border border-warmgold/30 text-sm">
-                    <button onclick="verificarPassword()" class="w-full bg-warmgold text-white py-3 rounded-lg uppercase text-xs tracking-widest hover:bg-darkgray transition-colors">Acceder</button>
-                </div>
-            </div>
-
-            <div id="dashboardSection" class="hidden space-y-6">
-                <div class="flex justify-between items-center border-b pb-4">
-                    <h3 class="serif-font text-2xl text-darkgray">Mensajes Recibidos (<span id="totalMessages">0</span>)</h3>
-                    <button onclick="cerrarSesionNovios()" class="text-xs text-red-500 uppercase tracking-wider">Cerrar Sesión</button>
-                </div>
-                <div id="messagesList" class="space-y-4">
-                    <!-- Aquí se cargan dinámicamente los audios guardados -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Script de Lógica y Grabación de Audio -->
     <script>
         // ⚠️ SUSTITUYE estos dos valores por los de tu proyecto en Supabase
         // (Project Settings > API: "Project URL" y la clave "anon public" / "publishable")
-const SUPABASE_URL = "https://htscaxjtgulwzeqvsjmf.supabase.co";
-const SUPABASE_KEY = "sb_publishable_PSvxW7TG9KHbWFUzH8sWpw_C7FcB0cf";
+        const SUPABASE_URL = "TU_PROJECT_URL";
+        const SUPABASE_KEY = "TU_ANON_KEY";
         const BUCKET = "mensajes";
 
         const supabaseListo = SUPABASE_URL !== "TU_PROJECT_URL" && SUPABASE_KEY !== "TU_ANON_KEY";
         const sb = supabaseListo ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-        function escapeHtml(texto) {
-            const d = document.createElement('div');
-            d.textContent = texto;
-            return d.innerHTML;
-        }
 
         let mediaRecorder;
         let audioChunks = [];
@@ -291,97 +257,13 @@ const SUPABASE_KEY = "sb_publishable_PSvxW7TG9KHbWFUzH8sWpw_C7FcB0cf";
                 audioBlob = null;
             } catch (err) {
                 console.error(err);
-                alert('Hubo un problema al enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.');
+                alert('Hubo un problema al enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.\n\nDetalle técnico: ' + (err && err.message ? err.message : JSON.stringify(err)));
                 submitBtn.disabled = false;
             } finally {
                 submitBtn.innerText = textoOriginal;
             }
         }
 
-        function abrirModalNovios() {
-            document.getElementById('noviosModal').classList.remove('hidden');
-        }
-
-        function cerrarModalNovios() {
-            document.getElementById('noviosModal').classList.add('hidden');
-        }
-
-        function verificarPassword() {
-            const pass = document.getElementById('adminPassword').value;
-            if (pass === 'boda2026') {
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('dashboardSection').classList.remove('hidden');
-                cargarMensajesAdmin();
-            } else {
-                alert('Contraseña incorrecta.');
-            }
-        }
-
-        function cerrarSesionNovios() {
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('adminPassword').value = '';
-        }
-
-        async function cargarMensajesAdmin() {
-            const container = document.getElementById('messagesList');
-
-            if (!supabaseListo) {
-                container.innerHTML = '<p class="text-xs text-red-500 text-center py-6">Falta configurar Supabase en este archivo (SUPABASE_URL y SUPABASE_KEY).</p>';
-                return;
-            }
-
-            container.innerHTML = '<p class="text-xs text-darkgray/60 text-center py-6">Cargando mensajes…</p>';
-
-            try {
-                const { data: mensajes, error } = await sb.from('mensajes').select('*').order('fecha', { ascending: false });
-                if (error) throw error;
-
-                document.getElementById('totalMessages').innerText = mensajes.length;
-                container.innerHTML = '';
-
-                if (mensajes.length === 0) {
-                    container.innerHTML = '<p class="text-xs text-darkgray/60 text-center py-6">Aún no hay mensajes de voz guardados.</p>';
-                    return;
-                }
-
-                mensajes.forEach(m => {
-                    const f = new Date(m.fecha);
-                    const fechaTexto = f.toLocaleDateString() + ' ' + f.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-                    const item = document.createElement('div');
-                    item.className = 'bg-cream p-4 rounded-xl border border-warmgold/20 flex flex-col gap-3';
-                    item.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-medium text-darkgray text-sm">🎙️ ${escapeHtml(m.nombre)}</h4>
-                            <span class="text-[10px] text-darkgray/50">${fechaTexto}</span>
-                        </div>
-                        <audio controls preload="none" src="${encodeURI(m.audio_url)}" class="w-full"></audio>
-                        <button class="delete-btn text-[10px] text-red-500 uppercase tracking-wider text-right hover:underline">Eliminar mensaje</button>
-                    `;
-                    item.querySelector('.delete-btn').addEventListener('click', () => eliminarMensaje(m.id, m.storage_path));
-                    container.appendChild(item);
-                });
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p class="text-xs text-red-500 text-center py-6">No se pudieron cargar los mensajes. Revisa tu conexión.</p>';
-            }
-        }
-
-        async function eliminarMensaje(id, storagePath) {
-            if (!confirm('¿Estás seguro de que deseas eliminar este mensaje?')) return;
-            try {
-                const { error: errFila } = await sb.from('mensajes').delete().eq('id', id);
-                if (errFila) throw errFila;
-                if (storagePath) {
-                    await sb.storage.from(BUCKET).remove([storagePath]);
-                }
-                cargarMensajesAdmin();
-            } catch (err) {
-                console.error(err);
-                alert('No se pudo eliminar el mensaje. Inténtalo de nuevo.');
-            }
-        }
     </script>
 </body>
 </html>

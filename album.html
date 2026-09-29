@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.T. & E. · Álbum de Fotos y Vídeos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { cream: '#FDFBF7', softgray: '#F4F1EA', darkgray: '#2C2A29', warmgold: '#C5A880' },
+                    fontFamily: { serif: ['"Cormorant Garamond"', 'serif'], sans: ['"Montserrat"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FDFBF7; color: #2C2A29; font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .serif-font { font-family: 'Cormorant Garamond', serif; }
+    </style>
+</head>
+<body class="selection:bg-warmgold selection:text-white min-h-screen flex flex-col">
+
+    <nav class="w-full py-6 px-8 flex justify-between items-center border-b border-warmgold/20 bg-cream/90 backdrop-blur-md">
+        <div class="serif-font text-2xl tracking-widest font-semibold text-darkgray">M.T. & E.</div>
+        <a href="buzon-voz-boda.html" class="text-xs uppercase tracking-widest border border-warmgold text-darkgray px-4 py-2 hover:bg-warmgold hover:text-white transition-all rounded-full">🎙️ Buzón de voz</a>
+    </nav>
+
+    <main class="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
+        <p class="uppercase tracking-[0.25em] text-sm text-warmgold mb-4 font-medium">Álbum Compartido</p>
+        <h1 class="text-5xl md:text-6xl serif-font font-normal tracking-wide text-darkgray mb-2">
+            Marí Tere <span class="text-warmgold italic font-light">&</span> Eduardo
+        </h1>
+        <div class="w-16 h-[1px] bg-warmgold my-5"></div>
+        <p class="max-w-md text-darkgray/80 text-sm md:text-base font-light leading-relaxed mb-12">
+            Comparte tus fotos y vídeos de la boda, o echa un vistazo a los que ya han subido otros invitados.
+        </p>
+
+        <div class="w-full max-w-md space-y-5">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfm3vixnc03jbipZXLhZIQ6n0s6yLU_61nwRhPuwoF_7QFVXw/viewform?usp=publish-editor"
+               target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white p-6 rounded-2xl border border-warmgold/20 shadow-sm hover:bg-warmgold/10 hover:border-warmgold transition-all text-left">
+                <span class="text-3xl">📤</span>
+                <span class="flex-1">
+                    <span class="block serif-font text-2xl text-darkgray">Subir fotos y vídeos</span>
+                    <span class="block text-xs text-darkgray/60 mt-0.5">Comparte tus momentos de la boda</span>
+                </span>
+                <span class="text-warmgold text-xl group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+
+            <a href="https://drive.google.com/drive/folders/1_GzJBfOmr20iyNUtvhJ3MMfDCgZ2vLJ0lbzvbdpcdEBQ0JhKAZ4kz2_Gz-C9oF0S-nZvICNU?usp=sharing"
+               target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white p-6 rounded-2xl border border-warmgold/20 shadow-sm hover:bg-warmgold/10 hover:border-warmgold transition-all text-left">
+                <span class="text-3xl">🖼️</span>
+                <span class="flex-1">
+                    <span class="block serif-font text-2xl text-darkgray">Ver la galería</span>
+                    <span class="block text-xs text-darkgray/60 mt-0.5">Mira y descarga lo que han compartido</span>
+                </span>
+                <span class="text-warmgold text-xl group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-softgray/60 py-10 px-6 text-center border-t border-warmgold/20">
+        <h3 class="serif-font text-xl text-darkgray mb-2">Marí Tere & Eduardo</h3>
+        <p class="text-xs tracking-widest text-warmgold uppercase">XVII · X · MMXXVI</p>
+    </footer>
+
+</body>
+</html>
